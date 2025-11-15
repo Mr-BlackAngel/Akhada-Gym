@@ -1,0 +1,98 @@
+{% extends "admin_layout.html" %}
+
+{% block title %}Add New Trainer - Admin{% endblock %}
+
+{% block admin_content %}
+<header class="mb-8">
+    <h1 class="text-3xl font-bold text-neutral-900">Add New Trainer</h1>
+    <p class="text-neutral-600">Fill out the form below to create a new trainer profile.</p>
+</header>
+
+<div class="bg-white rounded-xl shadow-lg border border-neutral-200 p-8 max-w-4xl mx-auto">
+    
+    <!-- 
+      This form POSTs to our new '/admin/trainers/add' route in app.py
+    -->
+    <form action="{{ url_for('admin_add_trainer') }}" method="POST" class="space-y-6">
+
+        <!-- 
+          This is where error/success messages from app.py will appear.
+        -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="p-4 rounded-md {{ 'bg-red-100 text-red-800' if category == 'error' else 'bg-primary-100 text-primary-800' }}" role="alert">
+                        <p class="font-medium">{{ 'Error!' if category == 'error' else 'Success!' }}</p>
+                        <p>{{ message }}</p>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <!-- 
+          This is the form, translated from your TrainerForm in React
+        -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Full Name -->
+            <div class="space-y-2">
+                <label for="name" class="block text-sm font-medium text-neutral-700">Full Name *</label>
+                <input type="text" name="name" id="name" class="form-input w-full rounded-md border-neutral-300 shadow-sm focus:border-primary-500 focus:ring-primary-500" required>
+            </div>
+            <!-- Email -->
+            <div class="space-y-2">
+                <label for="email" class="block text-sm font-medium text-neutral-700">Email *</label>
+                <input type="email" name="email" id="email" class="form-input w-full rounded-md border-neutral-300 shadow-sm focus:border-primary-500 focus:ring-primary-500" required>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Password -->
+            <div class="space-y-2">
+                <label for="password" class="block text-sm font-medium text-neutral-700">Password *</label>
+                <input type="password" name="password" id="password" class="form-input w-full rounded-md border-neutral-300 shadow-sm focus:border-primary-500 focus:ring-primary-500" placeholder="Create a temporary password" required>
+            </div>
+            <!-- Phone -->
+            <div class="space-y-2">
+                <label for="phone" class="block text-sm font-medium text-neutral-700">Phone</label>
+                <input type="tel" name="phone" id="phone" class="form-input w-full rounded-md border-neutral-300 shadow-sm focus:border-primary-500 focus:ring-primary-500">
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Specialization -->
+            <div class="space-y-2">
+                <label for="specialization" class="block text-sm font-medium text-neutral-700">Specialization</label>
+                <input type="text" name="specialization" id="specialization" class="form-input w-full rounded-md border-neutral-300 shadow-sm focus:border-primary-500 focus:ring-primary-500" placeholder="e.g., Strength Training">
+            </div>
+            <!-- Experience -->
+            <div class="space-y-2">
+                <label for="experience" class="block text-sm font-medium text-neutral-700">Experience</label>
+                <input type="text" name="experience" id="experience" class="form-input w-full rounded-md border-neutral-300 shadow-sm focus:border-primary-500 focus:ring-primary-500" placeholder="e.g., 5 years">
+            </div>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Certification -->
+            <div class="space-y-2">
+                <label for="certification" class="block text-sm font-medium text-neutral-700">Certification</label>
+                <input type="text" name="certification" id="certification" class="form-input w-full rounded-md border-neutral-300 shadow-sm focus:border-primary-500 focus:ring-primary-500" placeholder="e.g., NASM CPT">
+            </div>
+            <!-- Salary -->
+            <div class="space-y-2">
+                <label for="salary" class="block text-sm font-medium text-neutral-700">Salary</label>
+                <input type="text" name="salary" id="salary" class="form-input w-full rounded-md border-neutral-300 shadow-sm focus:border-primary-500 focus:ring-primary-500" placeholder="e.g., ₹50,000">
+            </div>
+        </div>
+
+        <!-- Form Actions -->
+        <div class="flex items-center justify-end gap-4 pt-6 border-t border-neutral-200">
+            <a href="{{ url_for('admin_trainers') }}" class="text-sm font-medium text-neutral-600 hover:text-neutral-900">
+                Cancel
+            </a>
+            <button type="submit" class="bg-primary-600 hover:bg-primary-700 text-white font-medium py-2 px-6 rounded-lg shadow-md transition-colors flex items-center gap-2">
+                Create Trainer
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock %}

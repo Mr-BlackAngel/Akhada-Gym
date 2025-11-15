@@ -1,0 +1,105 @@
+{% extends "admin_layout.html" %}
+
+{% block title %}Edit Trainer - Admin{% endblock %}
+
+{% block admin_content %}
+<header class="mb-8">
+    <h1 class="text-3xl font-bold text-neutral-900">Edit Trainer: {{ trainer.name }}</h1>
+    <p class="text-neutral-600">Update the trainer's profile details below.</p>
+</header>
+
+<div class="bg-white rounded-xl shadow-lg border border-neutral-200 p-8 max-w-4xl mx-auto">
+    
+    <!-- 
+      This form POSTs to our new 'admin_edit_trainer' route,
+      and includes the trainer's ID in the URL.
+    -->
+    <form action="{{ url_for('admin_edit_trainer', trainer_id=trainer.id) }}" method="POST" class="space-y-6">
+
+        <!-- 
+          This is where error/success messages from app.py will appear.
+        -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="p-4 rounded-md {{ 'bg-red-100 text-red-800' if category == 'error' else 'bg-primary-100 text-primary-800' }}" role="alert">
+                        <p class="font-medium">{{ 'Error!' if category == 'error' else 'Success!' }}</p>
+                        <p>{{ message }}</p>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <!-- 
+          This is the pre-filled form.
+          We use the 'value' attribute on each input.
+        -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Full Name -->
+            <div class="space-y-2">
+                <label for="name" class="block text-sm font-medium text-neutral-700">Full Name *</label>
+                <input type="text" name="name" id="name" value="{{ trainer.name or '' }}" class="form-input w-full rounded-md border-neutral-300 shadow-sm focus:border-primary-500 focus:ring-primary-500" required>
+            </div>
+            <!-- Email -->
+            <div class="space-y-2">
+                <label for="email" class="block text-sm font-medium text-neutral-700">Email *</label>
+                <input type="email" name="email" id="email" value="{{ trainer.email or '' }}" class="form-input w-full rounded-md border-neutral-300 shadow-sm focus:border-primary-500 focus:ring-primary-500" required>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Phone -->
+            <div class="space-y-2">
+                <label for="phone" class="block text-sm font-medium text-neutral-700">Phone</label>
+                <input type="tel" name="phone" id="phone" value="{{ trainer.phone or '' }}" class="form-input w-full rounded-md border-neutral-300 shadow-sm focus:border-primary-500 focus:ring-primary-500">
+            </div>
+            <!-- Specialization -->
+            <div class="space-y-2">
+                <label for="specialization" class="block text-sm font-medium text-neutral-700">Specialization</label>
+                <input type="text" name="specialization" id="specialization" value="{{ trainer.specialization or '' }}" class="form-input w-full rounded-md border-neutral-300 shadow-sm focus:border-primary-500 focus:ring-primary-500" placeholder="e.g., Strength Training">
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Experience -->
+            <div class="space-y-2">
+                <label for="experience" class="block text-sm font-medium text-neutral-700">Experience</label>
+                <input type="text" name="experience" id="experience" value="{{ trainer.experience or '' }}" class="form-input w-full rounded-md border-neutral-300 shadow-sm focus:border-primary-500 focus:ring-primary-500" placeholder="e.g., 5 years">
+            </div>
+            <!-- Certification -->
+            <div class="space-y-2">
+                <label for="certification" class="block text-sm font-medium text-neutral-700">Certification</label>
+                <input type="text" name="certification" id="certification" value="{{ trainer.certification or '' }}" class="form-input w-full rounded-md border-neutral-300 shadow-sm focus:border-primary-500 focus:ring-primary-500" placeholder="e.g., NASM CPT">
+            </div>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <!-- Salary -->
+            <div class="space-y-2">
+                <label for="salary" class="block text-sm font-medium text-neutral-700">Salary</label>
+                <input type="text" name="salary" id="salary" value="{{ trainer.salary or '' }}" class="form-input w-full rounded-md border-neutral-300 shadow-sm focus:border-primary-500 focus:ring-primary-500" placeholder="e.g., ₹50,000">
+            </div>
+            <!-- Clients -->
+            <div class="space-y-2">
+                <label for="clients" class="block text-sm font-medium text-neutral-700">Clients</label>
+                <input type="number" name="clients" id="clients" value="{{ trainer.clients or 0 }}" class="form-input w-full rounded-md border-neutral-300 shadow-sm focus:border-primary-500 focus:ring-primary-500">
+            </div>
+            <!-- Rating -->
+            <div class="space-y-2">
+                <label for="rating" class="block text-sm font-medium text-neutral-700">Rating (0.0 - 5.0)</label>
+                <input type="number" step="0.1" min="0" max="5" name="rating" id="rating" value="{{ trainer.rating or 0.0 }}" class="form-input w-full rounded-md border-neutral-300 shadow-sm focus:border-primary-500 focus:ring-primary-500">
+            </div>
+        </div>
+
+        <!-- Form Actions -->
+        <div class="flex items-center justify-end gap-4 pt-6 border-t border-neutral-200">
+            <a href="{{ url_for('admin_trainers') }}" class="text-sm font-medium text-neutral-600 hover:text-neutral-900">
+                Cancel
+            </a>
+            <button type="submit" class="bg-primary-600 hover:bg-primary-700 text-white font-medium py-2 px-6 rounded-lg shadow-md transition-colors flex items-center gap-2">
+                Save Changes
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock %}

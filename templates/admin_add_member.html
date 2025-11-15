@@ -1,0 +1,106 @@
+{% extends "admin_layout.html" %}
+
+{% block title %}Add New Member - Admin{% endblock %}
+
+{% block admin_content %}
+<header class="mb-8">
+    <h1 class="text-3xl font-bold text-neutral-900">Add New Member</h1>
+    <p class="text-neutral-600">Fill out the form below to create a new membership.</p>
+</header>
+
+<div class="bg-white rounded-xl shadow-lg border border-neutral-200 p-8 max-w-4xl mx-auto">
+    
+    <!-- 
+      This form POSTs to our new '/admin/members/add' route in app.py
+    -->
+    <form action="{{ url_for('admin_add_member') }}" method="POST" class="space-y-6">
+
+        <!-- 
+          This is where error/success messages from app.py will appear.
+          (e.g., "Member created successfully!")
+        -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="p-4 rounded-md {{ 'bg-red-100 text-red-800' if category == 'error' else 'bg-primary-100 text-primary-800' }}" role="alert">
+                        <p class="font-medium">{{ 'Error!' if category == 'error' else 'Success!' }}</p>
+                        <p>{{ message }}</p>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <!-- 
+          This is the form, translated from your MemberForm in React
+        -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Full Name -->
+            <div class="space-y-2">
+                <label for="name" class="block text-sm font-medium text-neutral-700">Full Name *</label>
+                <input type="text" name="name" id="name" class="form-input w-full rounded-md border-neutral-300 shadow-sm focus:border-primary-500 focus:ring-primary-500" required>
+            </div>
+            <!-- Email -->
+            <div class="space-y-2">
+                <label for="email" class="block text-sm font-medium text-neutral-700">Email *</label>
+                <input type="email" name="email" id="email" class="form-input w-full rounded-md border-neutral-300 shadow-sm focus:border-primary-500 focus:ring-primary-500" required>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Password -->
+            <div class="space-y-2">
+                <label for="password" class="block text-sm font-medium text-neutral-700">Password *</label>
+                <input type="password" name="password" id="password" class="form-input w-full rounded-md border-neutral-300 shadow-sm focus:border-primary-500 focus:ring-primary-500" placeholder="Create a temporary password" required>
+            </div>
+            <!-- Phone -->
+            <div class="space-y-2">
+                <label for="phone" class="block text-sm font-medium text-neutral-700">Phone</label>
+                <input type="tel" name="phone" id="phone" class="form-input w-full rounded-md border-neutral-300 shadow-sm focus:border-primary-500 focus:ring-primary-500">
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <!-- Plan -->
+            <div class="space-y-2">
+                <label for="plan" class="block text-sm font-medium text-neutral-700">Plan *</label>
+                <select name="plan" id="plan" class="form-select w-full rounded-md border-neutral-300 shadow-sm focus:border-primary-500 focus:ring-primary-500" required>
+                    <option value="Basic">Basic</option>
+                    <option value="Premium">Premium</option>
+                    <option value="VIP">VIP</option>
+                </select>
+            </div>
+            <!-- Age -->
+            <div class="space-y-2">
+                <label for="age" class="block text-sm font-medium text-neutral-700">Age</label>
+                <input type="number" name="age" id="age" class="form-input w-full rounded-md border-neutral-300 shadow-sm focus:border-primary-500 focus:ring-primary-500">
+            </div>
+            <!-- Gender -->
+            <div class="space-y-2">
+                <label for="gender" class="block text-sm font-medium text-neutral-700">Gender</label>
+                <select name="gender" id="gender" class="form-select w-full rounded-md border-neutral-300 shadow-sm focus:border-primary-500 focus:ring-primary-500">
+                    <option value="">Select gender</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Address -->
+        <div class="space-y-2">
+            <label for="address" class="block text-sm font-medium text-neutral-700">Address</label>
+            <textarea name="address" id="address" rows="3" class="form-textarea w-full rounded-md border-neutral-300 shadow-sm focus:border-primary-500 focus:ring-primary-500"></textarea>
+        </div>
+
+        <!-- Form Actions -->
+        <div class="flex items-center justify-end gap-4 pt-6 border-t border-neutral-200">
+            <a href="{{ url_for('admin_members') }}" class="text-sm font-medium text-neutral-600 hover:text-neutral-900">
+                Cancel
+            </a>
+            <button type="submit" class="bg-primary-600 hover:bg-primary-700 text-white font-medium py-2 px-6 rounded-lg shadow-md transition-colors flex items-center gap-2">
+                Create Member
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock %}

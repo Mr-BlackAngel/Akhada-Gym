@@ -1,0 +1,195 @@
+{% extends "member_layout.html" %}
+
+{% block title %}Member Dashboard - AKHADA{% endblock %}
+
+{% block member_content %}
+<!-- 
+  This content will be injected into the 'member_content' block
+  in member_layout.html.
+-->
+<header class="mb-8">
+    <h1 class="text-3xl font-bold text-neutral-900">Welcome back, {{ user.name.split(' ')[0] }}!</h1>
+    <p class="text-neutral-600">Here's your activity overview.</p>
+</header>
+
+<!-- Stats Cards -->
+<section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+
+    <div class="bg-white p-6 rounded-xl shadow-lg border border-neutral-200">
+        <div class="flex items-center justify-between mb-2">
+            <span class="text-sm font-medium text-neutral-500">Total Workouts</span>
+            <span class="p-2 bg-primary-100 text-primary-600 rounded-lg">
+                <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+                </svg>
+            </span>
+        </div>
+        <p class="text-3xl font-bold text-neutral-900">{{ total_checkins }}</p>
+    </div>
+
+    <div class="bg-white p-6 rounded-xl shadow-lg border border-neutral-200">
+        <div class="flex items-center justify-between mb-2">
+            <span class="text-sm font-medium text-neutral-500">Classes Booked</span>
+            <span class="p-2 bg-primary-100 text-primary-600 rounded-lg">
+                <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect width="18" height="18" x="3" y="4" rx="2" ry="2"></rect>
+                    <line x1="16" x2="16" y1="2" y2="6"></line>
+                    <line x1="8" x2="8" y1="2" y2="6"></line>
+                    <line x1="3" x2="21" y1="10" y2="10"></line>
+                </svg>
+            </span>
+        </div>
+        <p class="text-3xl font-bold text-neutral-900">{{ total_sessions }}</p>
+    </div>
+
+    <div class="bg-white p-6 rounded-xl shadow-lg border border-neutral-200">
+        <div class="flex items-center justify-between mb-2">
+            <span class="text-sm font-medium text-neutral-500">Current Streak</span>
+            <span class="p-2 bg-primary-100 text-primary-600 rounded-lg">
+                <!-- Fire Icon -->
+                <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path
+                        d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5-2 4.9-1 7 1.07-2.14.8-4.5 2-6 .5 2.5-2 4.9-1 7 1.07-2.14.8-4.5 2-6 .5 2.5-2 4.9-1 7A2.5 2.5 0 0 0 15.5 14.5c.31 2 2.5 2 2.5 4 0 2.21-1.79 4-4 4-1.66 0-3-1-4-2.5-1 1.5-2.34 2.5-4 2.5-2.21 0-4-1.79-4-4 0-2 2.19-2 2.5-4Z">
+                    </path>
+                    <path d="M14 14.5c0-1.04-.5-1.5-1-2-.5 1.5-1.5 2.5-1 4 .5-1.5 1-2.5 1-4Z"></path>
+                </svg>
+            </span>
+        </div>
+        <p class="text-3xl font-bold text-neutral-900">{{ current_streak }} days</p>
+    </div>
+
+    <div class="bg-white p-6 rounded-xl shadow-lg border border-neutral-200">
+        <div class="flex items-center justify-between mb-2">
+            <span class="text-sm font-medium text-neutral-500">Membership</span>
+            <span class="p-2 bg-primary-100 text-primary-600 rounded-lg">
+                <!-- Award Icon -->
+                <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="8" r="7"></circle>
+                    <polyline points="8.21 13.89 7 23 12 17 17 23 15.79 13.88"></polyline>
+                </svg>
+            </span>
+        </div>
+        <p class="text-3xl font-bold text-neutral-900">{{ member.plan or 'N/A' }}</p>
+    </div>
+</section>
+
+<!-- Quick Actions & Recent Activity -->
+<section class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+
+    <!-- Quick Actions -->
+    <div class="bg-white p-6 rounded-xl shadow-lg border border-neutral-200">
+        <h2 class="text-xl font-semibold text-neutral-900 mb-4">Quick Actions</h2>
+        <div class="space-y-3">
+
+            <a href="{{ url_for('member_health') }}"
+                class="flex items-center gap-4 p-4 rounded-lg bg-neutral-50 hover:bg-neutral-100 border border-neutral-200 transition-colors">
+                <span class="p-3 bg-primary-100 text-primary-600 rounded-lg">
+                    <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path
+                            d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z">
+                        </path>
+                    </svg>
+                </span>
+                <div>
+                    <h3 class="font-medium text-neutral-900">Health Calculator</h3>
+                    <p class="text-sm text-neutral-500">Calculate your BMI and macros</p>
+                </div>
+            </a>
+
+            <!-- 
+              *** THIS IS THE CORRECTION ***
+              'Generate Workout' now points to 'member_workout'
+            -->
+            <a href="{{ url_for('member_workout') }}"
+                class="flex items-center gap-4 p-4 rounded-lg bg-neutral-50 hover:bg-neutral-100 border border-neutral-200 transition-colors">
+                <span class="p-3 bg-primary-100 text-primary-600 rounded-lg">
+                    <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+                    </svg>
+                </span>
+                <div>
+                    <h3 class="font-medium text-neutral-900">Generate Workout</h3>
+                    <p class="text-sm text-neutral-500">Get a workout plan for today</p>
+                </div>
+            </a>
+
+            <!-- 
+              *** THIS IS THE CORRECTION ***
+              'Book a Class' now points to 'member_classes'
+            -->
+            <a href="{{ url_for('member_classes') }}"
+                class="flex items-center gap-4 p-4 rounded-lg bg-neutral-50 hover:bg-neutral-100 border border-neutral-200 transition-colors">
+                <span class="p-3 bg-primary-100 text-primary-600 rounded-lg">
+                    <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <rect width="18" height="18" x="3" y="4" rx="2" ry="2"></rect>
+                        <line x1="16" x2="16" y1="2" y2="6"></line>
+                        <line x1="8" x2="8" y1="2" y2="6"></line>
+                        <line x1="3" x2="21" y1="10" y2="10"></line>
+                    </svg>
+                </span>
+                <div>
+                    <h3 class="font-medium text-neutral-900">Book a Class</h3>
+                    <p class="text-sm text-neutral-500">Browse and enroll in group classes</p>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <!-- Recent Activity -->
+    <div class="bg-white p-6 rounded-xl shadow-lg border border-neutral-200">
+        <h2 class="text-xl font-semibold text-neutral-900 mb-4">Recent Activity</h2>
+        <div class="space-y-4">
+
+            {% if recent_sessions %}
+            {% for session in recent_sessions %}
+            <div class="flex items-start gap-4">
+                <span class="p-3 bg-neutral-100 text-neutral-600 rounded-lg mt-1">
+                    <!-- Check Icon -->
+                    <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
+                </span>
+                <div>
+                    <h3 class="font-medium text-neutral-900">{{ session.session_type or 'Personal Training' }}</h3>
+                    <p class="text-sm text-neutral-500">
+                        with {{ session.trainers.name if session.trainers else 'Trainer' }}
+                    </p>
+                    <!-- 
+                          Here we use the strptime filter we added to app.py
+                          to parse the timestamp and then format it.
+                        -->
+                    <p class="text-sm text-neutral-400">
+                        {{ session.timestamp | format_isodate }}
+                    </p>
+                </div>
+            </div>
+            {% endfor %}
+            {% else %}
+            <div class="text-center py-12 text-neutral-500">
+                <svg class="w-12 h-12 mx-auto mb-4 text-neutral-300" xmlns="http://www.w3.org/2000/svg" width="24"
+                    height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+                </svg>
+                <h3 class="text-lg font-medium text-neutral-700">No Recent Activity</h3>
+                <p>Your recent workouts and classes will appear here.</p>
+            </div>
+            {% endif %}
+
+        </div>
+    </div>
+
+</section>
+{% endblock %}

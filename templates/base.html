@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
+    
+    <!-- Using the Inter font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <title>{% block title %}AKHADA Gym{% endblock %}</title>
+    
+    <style>
+      /* Apply the Inter font by default */
+      html, body {
+        font-family: 'Inter', sans-serif;
+      }
+      /* Ensure the body is full height and allows the fixed background */
+      body, #fixed-bg-wrapper {
+        min-height: 100vh;
+        background-color: transparent !important; /* Critical for showing fixed background */
+      }
+      
+      /* New style block to apply the fixed image to the whole page */
+      .parallax-background {
+        background-image: url('{{ url_for('static', filename='images/premium-hero.jpg') }}');
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed; /* THE PARALLAX EFFECT */
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: -10; /* Keep it behind all content */
+      }
+    </style>
+</head>
+<body class="text-neutral-50 antialiased">
+    
+    <!-- 1. FIXED BACKGROUND LAYER -->
+    <div class="parallax-background"></div>
+
+    <!-- 2. CONTENT LAYER (Opaque sections scroll over Layer 1) -->
+    <main id="fixed-bg-wrapper">
+        {% block content %}{% endblock %}
+    </main>
+
+</body>
+</html>

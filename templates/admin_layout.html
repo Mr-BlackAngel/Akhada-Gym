@@ -1,0 +1,161 @@
+{% extends "base.html" %}
+{% block content %}
+<!-- 
+  This is your NEW Admin Base Layout.
+  This is the 100% CORRECT version of the sidebar links.
+  I have added the missing 'Check-ins' and 'One-day Passes' links.
+-->
+<div class="min-h-screen flex bg-neutral-100">
+    
+    <!-- 
+      SIDEBAR
+    -->
+    <aside class="w-64 bg-gray-950 text-white flex flex-col p-4 shadow-xl flex-shrink-0">
+        <div class="flex items-center gap-3 mb-8 px-2">
+            <div class="bg-primary-600 p-2 rounded-lg">
+                <!-- Dumbbell SVG Icon -->
+                <svg class="w-6 h-6 text-white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path
+                        d="M14.4 14.4 9.6 9.6M18.657 5.343l-1.414-1.414a2 2 0 0 0-2.828 0l-1.414 1.414M11.07 12.93l-1.414 1.414a2 2 0 0 0 0 2.828l1.414 1.414a2 2 0 0 0 2.828 0l1.414-1.414M5.343 18.657l-1.414-1.414a2 2 0 0 1 0-2.828l1.414-1.414M12.93 11.07l1.414-1.414a2 2 0 0 0-2.828-2.828l-1.414 1.414">
+                    </path>
+                    <path d="M2 22 22 2"></path>
+                </svg>
+            </div>
+            <div class="text-xl font-bold tracking-wide">AKHADA</div>
+        </div>
+
+        <nav class="flex-1 space-y-2">
+            <!-- 
+              These links now point to our Python routes.
+            -->
+            
+            <!-- 1. Overview Link -->
+            <a href="{{ url_for('admin_dashboard') }}" class="flex items-center gap-3 px-3 py-2 rounded-lg transition-colors
+                      {% if active_page == 'overview' %}
+                        bg-primary-600 text-white font-medium
+                      {% else %}
+                        text-neutral-300 hover:bg-gray-800 hover:text-white
+                      {% endif %}">
+                <!-- Home Icon -->
+                <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                    <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                </svg>
+                <span>Overview</span>
+            </a>
+
+            <!-- 2. Members Link -->
+            <a href="{{ url_for('admin_members') }}" class="flex items-center gap-3 px-3 py-2 rounded-lg transition-colors
+                      {% if active_page == 'members' %}
+                        bg-primary-600 text-white font-medium
+                      {% else %}
+                        text-neutral-300 hover:bg-gray-800 hover:text-white
+                      {% endif %}">
+                <!-- Users Icon -->
+                <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="9" cy="7" r="4"></circle>
+                    <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                </svg>
+                <span>Members</span>
+            </a>
+            
+            <!-- 3. Trainers Link -->
+            <a href="{{ url_for('admin_trainers') }}" class="flex items-center gap-3 px-3 py-2 rounded-lg transition-colors
+                      {% if active_page == 'trainers' %}
+                        bg-primary-600 text-white font-medium
+                      {% else %}
+                        text-neutral-300 hover:bg-gray-800 hover:text-white
+                      {% endif %}">
+                <!-- Dumbbell Icon -->
+                <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path
+                        d="M14.4 14.4 9.6 9.6M18.657 5.343l-1.414-1.414a2 2 0 0 0-2.828 0l-1.414 1.414M11.07 12.93l-1.414 1.414a2 2 0 0 0 0 2.828l1.414 1.414a2 2 0 0 0 2.828 0l1.414-1.414M5.343 18.657l-1.414-1.414a2 2 0 0 1 0-2.828l1.414-1.414M12.93 11.07l1.414-1.414a2 2 0 0 0-2.828-2.828l-1.414 1.414">
+                    </path>
+                    <path d="M2 22 22 2"></path>
+                </svg>
+                <span>Trainers</span>
+            </a>
+            
+            <!-- 4. Payments Link -->
+            <a href="{{ url_for('admin_payments') }}" class="flex items-center gap-3 px-3 py-2 rounded-lg transition-colors
+                      {% if active_page == 'payments' %}
+                        bg-primary-600 text-white font-medium
+                      {% else %}
+                        text-neutral-300 hover:bg-gray-800 hover:text-white
+                      {% endif %}">
+                <!-- Credit Card Icon -->
+                <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect width="20" height="14" x="2" y="5" rx="2"></rect>
+                    <line x1="2" x2="22" y1="10" y2="10"></line>
+                </svg>
+                <span>Payments</span>
+            </a>
+            
+            <!-- 
+              *** 5. NEW CHECK-INS LINK ***
+            -->
+            <a href="{{ url_for('admin_checkins') }}" 
+               class="flex items-center gap-3 px-3 py-2 rounded-lg transition-colors
+                      {% if active_page == 'checkins' %}
+                        bg-primary-600 text-white font-medium
+                      {% else %}
+                        text-neutral-300 hover:bg-gray-800 hover:text-white
+                      {% endif %}">
+                <!-- Check Icon -->
+                <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                <span>Check-ins</span>
+            </a>
+            
+            <!-- 
+              *** 6. NEW ONE-DAY PASSES LINK ***
+            -->
+            <a href="{{ url_for('admin_passes') }}" 
+               class="flex items-center gap-3 px-3 py-2 rounded-lg transition-colors
+                      {% if active_page == 'passes' %}
+                        bg-primary-600 text-white font-medium
+                      {% else %}
+                        text-neutral-300 hover:bg-gray-800 hover:text-white
+                      {% endif %}">
+                <!-- Ticket Icon -->
+                <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"></path><path d="M13 5v2"></path><path d="M13 17v2"></path><path d="M13 11v2"></path></svg>
+                <span>One-day Passes</span>
+            </a>
+        </nav>
+
+        <!-- User Info & Logout Button -->
+        <div class="mt-auto pt-4 border-t border-gray-700">
+            <div class="flex items-center justify-between">
+                <div>
+                    <div class="text-sm font-medium text-white">{{ user.name }}</div>
+                    <div class="text-xs text-neutral-400">{{ user.email }}</div>
+                </div>
+                <a href="{{ url_for('logout') }}" title="Sign Out"
+                    class="p-2 rounded-lg text-neutral-300 hover:bg-red-600 hover:text-white">
+                    <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                        <polyline points="16 17 21 12 16 7"></polyline>
+                        <line x1="21" x2="9" y1="12" y2="12"></line>
+                    </svg>
+                </a>
+            </div>
+        </div>
+    </aside>
+
+    <!-- 
+      MAIN CONTENT AREA
+      This is the "blank space" where our pages will go.
+    -->
+    <main class="flex-1 p-8 overflow-auto">
+        {% block admin_content %}{% endblock %}
+    </main>
+</div>
+{% endblock %}

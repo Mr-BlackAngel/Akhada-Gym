@@ -1,0 +1,86 @@
+{% extends "member_layout.html" %}
+
+{% block title %}Book Personal Training - Member{% endblock %}
+
+{% block member_content %}
+<header class="mb-8">
+    <h1 class="text-3xl font-bold text-neutral-900">Book Personal Training</h1>
+    <p class="text-neutral-600">Schedule your session with one of our expert trainers.</p>
+</header>
+
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    
+    <!-- Session Limits Card -->
+    <div class="lg:col-span-1">
+        <div class="bg-white p-6 rounded-xl shadow-lg border border-neutral-200 space-y-4">
+            <h2 class="text-xl font-semibold text-neutral-900">Monthly Allowance</h2>
+            
+            <div class="p-4 rounded-lg bg-neutral-50 border border-neutral-200">
+                <p class="text-sm font-medium text-neutral-600">Plan Limit:</p>
+                <p class="text-3xl font-bold text-neutral-900">{{ sessions_limit }} sessions</p>
+            </div>
+            
+            <div class="p-4 rounded-lg bg-red-50 border border-red-200">
+                <p class="text-sm font-medium text-neutral-600">Sessions Used:</p>
+                <p class="text-3xl font-bold text-red-600">{{ sessions_used }}</p>
+            </div>
+            
+            <div class="p-4 rounded-lg {{ 'bg-green-50 border-green-200' if sessions_remaining > 0 else 'bg-neutral-200 border-neutral-300' }}">
+                <p class="text-sm font-medium text-neutral-600">Remaining Sessions:</p>
+                <p class="text-3xl font-bold {{ 'text-green-600' if sessions_remaining > 0 else 'text-neutral-600' }}">
+                    {{ sessions_remaining }}
+                </p>
+                {% if sessions_remaining <= 0 %}
+                    <p class="text-xs text-neutral-500 mt-2">Cannot book new sessions until next month.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <!-- Booking Form -->
+    <div class="lg:col-span-2">
+        <form action="{{ url_for('member_personal_training') }}" method="POST" class="bg-white p-6 rounded-xl shadow-lg border border-neutral-200 space-y-6">
+            
+            <h2 class="text-xl font-semibold text-neutral-900">Schedule a Session</h2>
+            
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="p-3 rounded-md {{ 'bg-red-100 text-red-800' if category == 'error' else 'bg-primary-100 text-primary-800' }}" role="alert">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <!-- Trainer Selection -->
+            <div class="space-y-2">
+                <label for="trainer_id" class="block text-sm font-medium text-neutral-700">Select Trainer *</label>
+                <select name="trainer_id" id="trainer_id" class="form-select w-full rounded-md border-neutral-300 shadow-sm focus:border-primary-500 focus:ring-primary-500" required>
+                    <option value="">-- Choose a Trainer --</option>
+                    {% for trainer in trainers_list %}
+                        <option value="{{ trainer.id }}">{{ trainer.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- Date and Time Selection -->
+            <div class="space-y-2">
+                <label for="session_time" class="block text-sm font-medium text-neutral-700">Preferred Date & Time *</label>
+                <input type="datetime-local" 
+                       name="session_time" 
+                       id="session_time" 
+                       min="{{ now.strftime('%Y-%m-%dT%H:%M') }}" 
+                       class="form-input w-full rounded-md border-neutral-300 shadow-sm focus:border-primary-500 focus:ring-primary-500" required>
+                <p class="text-xs text-neutral-500">Note: This booking is tentative and must be confirmed by the trainer.</p>
+            </div>
+
+            <button type="submit" 
+                    class="w-full bg-primary-600 hover:bg-primary-700 text-white font-medium py-3 px-4 rounded-lg shadow-md transition-colors"
+                    {% if sessions_remaining <= 0 %}disabled{% endif %}>
+                Book Session ({{ sessions_remaining }} remaining)
+            </button>
+        </form>
+    </div>
+</div>
+{% endblock %}

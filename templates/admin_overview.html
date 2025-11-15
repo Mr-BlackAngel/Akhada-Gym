@@ -1,0 +1,79 @@
+{% extends "admin_layout.html" %}
+
+{% block admin_content %}
+<!-- 
+  This content will be injected into the 'admin_content' block
+  in admin_layout.html.
+-->
+<header class="mb-8">
+    <h1 class="text-3xl font-bold text-neutral-900">Admin Overview</h1>
+    <p class="text-neutral-600">Welcome back, {{ user.name }}. Here's what's happening.</p>
+</header>
+
+<!-- Stats Cards -->
+<section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+    <div class="bg-white p-6 rounded-xl shadow-lg border border-neutral-200">
+        <div class="flex items-center justify-between mb-2">
+            <span class="text-sm font-medium text-neutral-500">Total Revenue</span>
+            <span class="p-2 bg-primary-100 text-primary-600 rounded-lg">
+                <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" x2="12" y1="2" y2="22"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+            </span>
+        </div>
+        <p class="text-3xl font-bold text-neutral-900">{{ total_revenue | currency }}</p>
+    </div>
+    
+    <div class="bg-white p-6 rounded-xl shadow-lg border border-neutral-200">
+        <div class="flex items-center justify-between mb-2">
+            <span class="text-sm font-medium text-neutral-500">Active Members</span>
+            <span class="p-2 bg-primary-100 text-primary-600 rounded-lg">
+                <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+            </span>
+        </div>
+        <p class="text-3xl font-bold text-neutral-900">{{ active_members }}</p>
+    </div>
+    
+    <div class="bg-white p-6 rounded-xl shadow-lg border border-neutral-200">
+        <div class="flex items-center justify-between mb-2">
+            <span class="text-sm font-medium text-neutral-500">Total Sessions</span>
+            <span class="p-2 bg-primary-100 text-primary-600 rounded-lg">
+                <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+            </span>
+        </div>
+        <p class="text-3xl font-bold text-neutral-900">{{ sessions_count }}</p>
+    </div>
+    
+    <div class="bg-white p-6 rounded-xl shadow-lg border border-neutral-200">
+        <div class="flex items-center justify-between mb-2">
+            <span class="text-sm font-medium text-neutral-500">Trainers</span>
+            <span class="p-2 bg-primary-100 text-primary-600 rounded-lg">
+                <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.4 14.4 9.6 9.6M18.657 5.343l-1.414-1.414a2 2 0 0 0-2.828 0l-1.414 1.414M11.07 12.93l-1.414 1.414a2 2 0 0 0 0 2.828l1.414 1.414a2 2 0 0 0 2.828 0l1.414-1.414M5.343 18.657l-1.414-1.414a2 2 0 0 1 0-2.828l1.414-1.414M12.93 11.07l1.414-1.414a2 2 0 0 0-2.828-2.828l-1.414 1.414"></path><path d="M2 22 22 2"></path></svg>
+            </span>
+        </div>
+        <p class="text-3xl font-bold text-neutral-900">{{ trainer_count }}</p>
+    </div>
+</section>
+
+<!-- Revenue Chart -->
+<section class="bg-white p-6 rounded-xl shadow-lg border border-neutral-200">
+    <h2 class="text-xl font-semibold text-neutral-900 mb-4">Revenue (Last 7 Days)</h2>
+    <div class="space-y-3">
+        <!-- 
+          This is a simple CSS bar chart built with Jinja.
+          It loops over the 'revenue_last_7_days' data from app.py
+        -->
+        {% set max_revenue = (revenue_last_7_days | map(attribute='amount') | max) %}
+        {% if max_revenue == 0 %}{% set max_revenue = 1 %}{% endif %} <!-- Avoid division by zero -->
+
+        {% for day in revenue_last_7_days %}
+            {% set percentage = (day.amount / max_revenue) * 100 %}
+            <div class="flex items-center gap-4">
+                <div class="w-20 text-sm text-neutral-600">{{ day.label }}</div>
+                <div class="flex-1 bg-neutral-100 h-8 rounded-lg overflow-hidden">
+                    <div style="width: {{ percentage }}%" class="h-8 rounded-lg bg-gradient-to-r from-primary-400 to-primary-600 transition-all duration-500"></div>
+                </div>
+                <div class="w-24 text-right text-sm font-medium">{{ day.amount | currency }}</div>
+            </div>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}

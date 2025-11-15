@@ -1,0 +1,222 @@
+{% extends "member_layout.html" %}
+
+{% block title %}Health Calculator - Member{% endblock %}
+
+{% block member_content %}
+<header class="mb-8">
+    <h1 class="text-3xl font-bold text-neutral-900">Health & Nutrition Calculator</h1>
+    <p class="text-neutral-600">Calculate your BMI, estimate your caloric needs, and track your progress over time.</p>
+</header>
+
+<!-- 
+  This page is split into two columns:
+  1. The Calculator Form
+  2. The Results & History
+-->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+    <!-- Column 1: Calculator Form -->
+    <div class="lg:col-span-1">
+        <form action="{{ url_for('member_health') }}" method="POST" class="bg-white p-6 rounded-xl shadow-lg border border-neutral-200 space-y-6">
+            
+            <h2 class="text-xl font-semibold text-neutral-900">Input Metrics</h2>
+            
+            <!-- Flash Messages -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="p-3 rounded-md {{ 'bg-red-100 text-red-800' if category == 'error' else 'bg-primary-100 text-primary-800' }}" role="alert">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <!-- CURRENT METRICS -->
+            <div class="space-y-2">
+                <label for="height" class="block text-sm font-medium text-neutral-700">Height (in cm)</label>
+                <input type="number" name="height" id="height" class="form-input w-full rounded-md border-neutral-300 shadow-sm focus:border-primary-500 focus:ring-primary-500" placeholder="e.g., 175" required>
+            </div>
+            <div class="space-y-2">
+                <label for="weight" class="block text-sm font-medium text-neutral-700">Current Weight (in kg)</label>
+                <input type="number" step="0.1" name="weight" id="weight" class="form-input w-full rounded-md border-neutral-300 shadow-sm focus:border-primary-500 focus:ring-primary-500" placeholder="e.g., 70.5" required>
+            </div>
+            <div class="space-y-2">
+                <label for="age" class="block text-sm font-medium text-neutral-700">Age</label>
+                <input type="number" name="age" id="age" class="form-input w-full rounded-md border-neutral-300 shadow-sm focus:border-primary-500 focus:ring-primary-500" placeholder="e.g., 28" required>
+            </div>
+            <div class="space-y-2">
+                <label for="gender" class="block text-sm font-medium text-neutral-700">Gender</label>
+                <select name="gender" id="gender" class="form-select w-full rounded-md border-neutral-300 shadow-sm focus:border-primary-500 focus:ring-primary-500" required>
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                </select>
+            </div>
+
+            <!-- ACTIVITY & GOAL -->
+            <div class="space-y-2">
+                <label for="activity_level" class="block text-sm font-medium text-neutral-700">Activity Level</label>
+                <select name="activity_level" id="activity_level" class="form-select w-full rounded-md border-neutral-300 shadow-sm focus:border-primary-500 focus:ring-primary-500" required>
+                    <option value="sedentary">Sedentary (little to no exercise)</option>
+                    <option value="light">Light (1-3 days/week)</option>
+                    <option value="moderate">Moderate (3-5 days/week)</option>
+                    <option value="active">Active (6-7 days/week)</option>
+                    <option value="veryActive">Very Active (2x per day)</option>
+                </select>
+            </div>
+            <div class="space-y-2">
+                <label for="goal" class="block text-sm font-medium text-neutral-700">Fitness Goal</label>
+                <select name="goal" id="goal" class="form-select w-full rounded-md border-neutral-300 shadow-sm focus:border-primary-500 focus:ring-primary-500" required>
+                    <option value="maintain">Maintain Weight</option>
+                    <option value="lose">Lose Weight</option>
+                    <option value="gain">Gain Weight/Muscle</option>
+                </select>
+            </div>
+
+            <!-- NEW INPUTS: Target -->
+            <h3 class="text-lg font-semibold text-neutral-800 pt-4 border-t">Goal Setting</h3>
+            <div class="space-y-2">
+                <label for="target_weight" class="block text-sm font-medium text-neutral-700">Target Weight (in kg)</label>
+                <input type="number" step="0.1" name="target_weight" id="target_weight" class="form-input w-full rounded-md border-neutral-300 shadow-sm focus:border-primary-500 focus:ring-primary-500" placeholder="e.g., 65.0" required>
+            </div>
+            <div class="space-y-2">
+                <label for="duration_weeks" class="block text-sm font-medium text-neutral-700">Time to Achieve Goal (in Weeks)</label>
+                <input type="number" name="duration_weeks" id="duration_weeks" min="1" class="form-input w-full rounded-md border-neutral-300 shadow-sm focus:border-primary-500 focus:ring-primary-500" placeholder="e.g., 12" required>
+            </div>
+
+            <button type="submit" class="w-full bg-primary-600 hover:bg-primary-700 text-white font-medium py-3 px-4 rounded-lg shadow-md transition-colors flex items-center justify-center gap-2">
+                <!-- Calculator Icon -->
+                <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="16" height="20" x="4" y="2" rx="2"></rect><line x1="8" x2="16" y1="6" y2="6"></line><line x1="16" x2="16" y1="14" y2="18"></line><line x1="16" x2="8" y1="18" y2="18"></line><line x1="8" x2="8" y1="14" y2="18"></line></svg>
+                <span>Calculate & Save</span>
+            </button>
+        </form>
+    </div>
+
+    <!-- Column 2: Results & History -->
+    <div class="lg:col-span-2 space-y-8">
+        
+        <!-- Results Card (from your POST request) -->
+        {% if results %}
+        <div class="bg-white p-6 rounded-xl shadow-lg border border-primary-300 space-y-6">
+            
+            <h2 class="text-xl font-semibold text-primary-700 flex items-center gap-3">
+                <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H7M16 16H8"></path></svg>
+                Personalized Results
+            </h2>
+            
+            <!-- RESULT STATS -->
+            <div class="grid grid-cols-3 gap-4">
+                <div class="text-center p-4 rounded-lg bg-neutral-50 border border-neutral-200">
+                    <p class="text-sm font-medium text-neutral-500">BMI</p>
+                    <p class="text-3xl font-bold text-neutral-900 mt-1">{{ results.bmi }}</p>
+                    <p class="text-xs text-primary-600 font-medium">{{ results.category }}</p>
+                </div>
+                <div class="text-center p-4 rounded-lg bg-neutral-50 border border-neutral-200">
+                    <p class="text-sm font-medium text-neutral-500">BMR (Base)</p>
+                    <p class="text-3xl font-bold text-neutral-900 mt-1">{{ results.bmr }}</p>
+                    <p class="text-xs text-neutral-600 font-medium">calories/day</p>
+                </div>
+                <div class="text-center p-4 rounded-lg bg-neutral-50 border border-neutral-200">
+                    <p class="text-sm font-medium text-neutral-500">TDEE (Total)</p>
+                    <p class="text-3xl font-bold text-neutral-900 mt-1">{{ results.tdee }}</p>
+                    <p class="text-xs text-neutral-600 font-medium">calories/day</p>
+                </div>
+            </div>
+
+            <!-- TARGET CALORIE & MACROS -->
+            <div class="bg-primary-50 p-4 rounded-lg border border-primary-200 space-y-4">
+                <div class="flex items-center justify-between">
+                    <h3 class="font-bold text-neutral-900">Target Calories (Goal: {{ results.goal | capitalize }} {{ results.target_weight }}kg)</h3>
+                    <p class="text-3xl font-bold text-primary-600">{{ results.target_calories }}</p>
+                </div>
+                <p class="text-sm text-neutral-600">
+                    Required Daily Adjustment: 
+                    <span class="font-bold text-lg {{ 'text-red-600' if results.daily_adjustment < 0 else 'text-green-600' }}">
+                        {{ results.daily_adjustment | int }} kcal 
+                    </span> 
+                    per day over {{ results.duration_weeks }} weeks.
+                </p>
+
+                <div class="space-y-4 pt-2 border-t border-primary-200">
+                    <h4 class="font-medium text-sm text-neutral-700">MACRONUTRIENT BREAKDOWN (40/30/30)</h4>
+                    
+                    <!-- Protein -->
+                    <div>
+                        <div class="flex justify-between mb-1">
+                            <span class="text-sm font-medium">Protein (30%)</span>
+                            <span>{{ results.protein }}g</span>
+                        </div>
+                        <div class="w-full bg-neutral-200 h-2 rounded-full">
+                            <div class="bg-primary-600 h-2 rounded-full" style="width: 30%"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- Carbs -->
+                    <div>
+                        <div class="flex justify-between mb-1">
+                            <span class="text-sm font-medium">Carbs (40%)</span>
+                            <span>{{ results.carbs }}g</span>
+                        </div>
+                        <div class="w-full bg-neutral-200 h-2 rounded-full">
+                            <div class="bg-primary-600 h-2 rounded-full" style="width: 40%"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- Fats -->
+                    <div>
+                        <div class="flex justify-between mb-1">
+                            <span class="text-sm font-medium">Fats (30%)</span>
+                            <span>{{ results.fats }}g</span>
+                        </div>
+                        <div class="w-full bg-neutral-200 h-2 rounded-full">
+                            <div class="bg-primary-600 h-2 rounded-full" style="width: 30%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        {% endif %}
+
+        <!-- History Card (from your GET request) -->
+        <div class="bg-white p-6 rounded-xl shadow-lg border border-neutral-200">
+            <h2 class="text-xl font-semibold text-neutral-900 mb-4">BMI History</h2>
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-neutral-200">
+                    <thead class="bg-neutral-50">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-neutral-500 uppercase">Date</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-neutral-500 uppercase">Weight</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-neutral-500 uppercase">Height</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-neutral-500 uppercase">BMI</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-neutral-500 uppercase">Category</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-neutral-200">
+                        {% for item in history %}
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-neutral-600">
+                                {{ item.recorded_at | format_isodate('%b %d, %Y') }}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-neutral-900 font-medium">{{ item.weight_kg }} kg</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-neutral-900 font-medium">{{ item.height_cm }} cm</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-neutral-900 font-medium">{{ item.bmi }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-neutral-600">{{ item.category }}</td>
+                        </tr>
+                        {% endfor %}
+                        
+                        {% if not history %}
+                        <tr>
+                            <td colspan="5" class="px-6 py-12 text-center text-neutral-500">
+                                No history found. Calculate your BMI to get started!
+                            </td>
+                        </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

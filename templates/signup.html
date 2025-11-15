@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Join AKHADA</title>
+    <!-- This links to your FINAL compiled CSS file -->
+    <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
+    <!-- Using the Inter font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+      body {
+        font-family: 'Inter', sans-serif;
+        /* This reuses your login background image.
+          Make sure 'login-bg.jpg' is in 'static/images/'
+        */
+        background-image: url("{{ url_for('static', filename='images/login-bg.jpg') }}");
+        background-size: cover;
+        background-position: center;
+      }
+    </style>
+</head>
+<body>
+
+    <!-- This is the translated HTML from your Signup.tsx, with the new Emerald theme -->
+    <div class="relative min-h-screen flex items-center justify-center bg-[#0b0f19] overflow-hidden py-12">
+        <!-- Dark overlay -->
+        <div class="absolute inset-0 bg-gradient-to-br from-neutral-900/70 via-neutral-900/80 to-black/70"></div>
+
+        <div class="relative w-full max-w-lg px-4 z-10">
+            <div class="backdrop-blur-xl bg-white/10 border border-white/20 shadow-2xl rounded-3xl p-10 text-white">
+                <!-- Header -->
+                <div class="flex flex-col items-center mb-8">
+                    <div class="bg-primary-600 p-4 rounded-full shadow-lg">
+                        <!-- UserPlus (Signup) SVG Icon -->
+                        <svg class="w-8 h-8 text-white" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><line x1="19" x2="19" y1="8" y2="14"></line><line x1="22" x2="16" y1="11" y2="11"></line></svg>
+                    </div>
+                    <h1 class="text-3xl font-semibold mt-4 tracking-tight">
+                        Join AKHADA
+                    </h1>
+                    <p class="text-white/70 text-center">Create your new membership</p>
+                </div>
+
+                <!-- 
+                  This is the main signup form. 
+                  - method="POST" sends the data to the server.
+                  - action="/signup" sends it to our Python '/signup' route.
+                -->
+                <form action="{{ url_for('signup') }}" method="POST" class="space-y-4">
+
+                    <!-- 
+                      This is where error/success messages from app.py will appear.
+                      (e.g., "Account created successfully!")
+                    -->
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                        {% if messages %}
+                            {% for category, message in messages %}
+                                <div class="p-3 rounded-md {{ 'bg-red-600' if category == 'error' else 'bg-primary-600' }} text-white" role="alert">
+                                    {{ message }}
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                    {% endwith %}
+
+                    <!-- Form fields -->
+                    <!-- Each 'name' attribute matches the key in our Python route (request.form.get) -->
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="space-y-2">
+                            <label for="name" class="text-sm font-medium leading-none">Full Name</label>
+                            <input type="text" name="name" id="name" class="form-input w-full bg-white/10 border-white/20 text-white placeholder-white/40 h-10 rounded-md border px-3 py-1 text-sm focus:ring-primary-400 focus:border-primary-400" placeholder="Enter full name" required>
+                        </div>
+                        <div class="space-y-2">
+                            <label for="email" class="text-sm font-medium leading-none">Email</label>
+                            <input type="email" name="email" id="email" class="form-input w-full bg-white/10 border-white/20 text-white placeholder-white/40 h-10 rounded-md border px-3 py-1 text-sm focus:ring-primary-400 focus:border-primary-400" placeholder="Enter email" required>
+                        </div>
+                    </div>
+
+                    <div class="space-y-2">
+                        <label for="password" class="text-sm font-medium leading-none">Password</label>
+                        <input type="password" name="password" id="password" class="form-input w-full bg-white/10 border-white/20 text-white placeholder-white/40 h-10 rounded-md border px-3 py-1 text-sm focus:ring-primary-400 focus:border-primary-400" placeholder="Create a password" required>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="space-y-2">
+                            <label for="phone" class="text-sm font-medium leading-none">Phone Number</label>
+                            <input type="tel" name="phone" id="phone" class="form-input w-full bg-white/10 border-white/20 text-white placeholder-white/40 h-10 rounded-md border px-3 py-1 text-sm focus:ring-primary-400 focus:border-primary-400" placeholder="Enter phone number">
+                        </div>
+                        <div class="space-y-2">
+                            <label for="age" class="text-sm font-medium leading-none">Age</label>
+                            <input type="number" name="age" id="age" class="form-input w-full bg-white/10 border-white/20 text-white placeholder-white/40 h-10 rounded-md border px-3 py-1 text-sm focus:ring-primary-400 focus:border-primary-400" placeholder="Enter your age">
+                        </div>
+                    </div>
+                    
+                    <div class="space-y-2">
+                        <label for="address" class="text-sm font-medium leading-none">Address</label>
+                        <input type="text" name="address" id="address" class="form-input w-full bg-white/10 border-white/20 text-white placeholder-white/40 h-10 rounded-md border px-3 py-1 text-sm focus:ring-primary-400 focus:border-primary-400" placeholder="Enter your address">
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="space-y-2">
+                            <label for="gender" class="text-sm font-medium leading-none">Gender</label>
+                            <select name="gender" id="gender" class="form-select w-full bg-white/10 border-white/20 text-white h-10 rounded-md border px-3 py-1 text-sm focus:ring-primary-400 focus:border-primary-400">
+                                <option value="" class="text-black">Select gender</option>
+                                <option value="Male" class="text-black">Male</option>
+                                <option value="Female" class="text-black">Female</option>
+                                <option value="Other" class="text-black">Other</option>
+                            </select>
+                        </div>
+                        <div class="space-y-2">
+                            <label for="plan" class="text-sm font-medium leading-none">Membership Plan</label>
+                            <select name="plan" id="plan" class="form-select w-full bg-white/10 border-white/20 text-white h-10 rounded-md border px-3 py-1 text-sm focus:ring-primary-400 focus:border-primary-400" required>
+                                <option value="Basic" class="text-black">Basic - ₹2,499/mo</option>
+                                <option value="Premium" class="text-black">Premium - ₹4,999/mo</option>
+                                <option value="VIP" class="text-black">VIP - ₹8,999/mo</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Signup button -->
+                    <button
+                        type="submit"
+                        class="w-full bg-primary-600 hover:bg-primary-700 text-white font-semibold text-lg py-3 rounded-xl h-auto transition-colors duration-200 mt-6"
+                    >
+                        Create Account
+                    </button>
+
+                    <!-- Back to login -->
+                    <a href="{{ url_for('login') }}" class="block w-full text-center text-white/70 hover:text-white hover:underline mt-4">
+                        ← Back to login
+                    </a>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,149 @@
+{% extends "trainer_layout.html" %}
+
+{% block title %}Fitness Tools - Trainer{% endblock %}
+
+{% block trainer_content %}
+<header class="mb-8">
+    <h1 class="text-3xl font-bold text-neutral-900">Fitness Tools</h1>
+    <p class="text-neutral-600">Standalone calculators to assist with your clients.</p>
+</header>
+
+<!-- Flash Messages -->
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        <div class="mb-6">
+        {% for category, message in messages %}
+            <div class="p-4 rounded-md {{ 'bg-red-100 text-red-800' if category == 'error' else 'bg-primary-100 text-primary-800' }}" role="alert">
+                {{ message }}
+            </div>
+        {% endfor %}
+        </div>
+    {% endif %}
+{% endwith %}
+
+<!-- 
+  This page holds two forms.
+  We use a hidden input <input type="hidden" name="form_type">
+  to tell app.py which form was submitted.
+-->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+
+    <!-- 
+      Column 1: BMI Calculator
+    -->
+    <div class="bg-white p-6 rounded-xl shadow-lg border border-neutral-200">
+        <h2 class="text-xl font-semibold text-neutral-900 mb-4">BMI Calculator</h2>
+        
+        <form action="{{ url_for('trainer_tools') }}" method="POST" class="space-y-4">
+            <!-- This hidden field tells app.py it's the BMI form -->
+            <input type="hidden" name="form_type" value="bmi">
+
+            <div class="space-y-2">
+                <label for="height" class="block text-sm font-medium text-neutral-700">Height (in cm)</label>
+                <input type="number" name="height" id="height" class="form-input w-full rounded-md border-neutral-300 shadow-sm focus:border-primary-500 focus:ring-primary-500" required>
+            </div>
+            <div class="space-y-2">
+                <label for="weight" class="block text-sm font-medium text-neutral-700">Weight (in kg)</label>
+                <input type="number" step="0.1" name="weight" id="weight" class="form-input w-full rounded-md border-neutral-300 shadow-sm focus:border-primary-500 focus:ring-primary-500" required>
+            </div>
+            <div class="space-y-2">
+                <label for="age" class="block text-sm font-medium text-neutral-700">Age</label>
+                <input type="number" name="age" id="age" class="form-input w-full rounded-md border-neutral-300 shadow-sm focus:border-primary-500 focus:ring-primary-500" required>
+            </div>
+            <div class="space-y-2">
+                <label for="gender" class="block text-sm font-medium text-neutral-700">Gender</label>
+                <select name="gender" id="gender" class="form-select w-full rounded-md border-neutral-300 shadow-sm focus:border-primary-500 focus:ring-primary-500" required>
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                </select>
+            </div>
+            <button type="submit" class="w-full bg-primary-600 hover:bg-primary-700 text-white font-medium py-2 px-4 rounded-lg shadow-md transition-colors">
+                Calculate BMI
+            </button>
+        </form>
+
+        <!-- 
+          This block only shows if 'bmi_results' were passed from app.py
+        -->
+        {% if bmi_results %}
+        <div class="mt-6 text-center p-6 bg-primary-50 rounded-lg border border-primary-200">
+            <p class="text-sm font-medium text-primary-700">CALCULATED BMI</p>
+            <p class="text-6xl font-bold text-primary-600 my-2">{{ bmi_results.bmi }}</p>
+            <p class="text-2xl font-medium text-neutral-800">{{ bmi_results.category }}</p>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- 
+      Column 2: Workout Generator
+    -->
+    <div class="bg-white p-6 rounded-xl shadow-lg border border-neutral-200">
+        <h2 class="text-xl font-semibold text-neutral-900 mb-4">Workout Generator</h2>
+        
+        <form action="{{ url_for('trainer_tools') }}" method="POST" class="space-y-4">
+            <!-- This hidden field tells app.py it's the Workout form -->
+            <input type="hidden" name="form_type" value="workout">
+            
+            <div class="space-y-2">
+                <label for="split" class="block text-sm font-medium text-neutral-700">Workout Split</label>
+                <select name="split" id="split" class="form-select w-full rounded-md border-neutral-300 shadow-sm focus:border-primary-500 focus:ring-primary-500">
+                    <option value="push">Push (Chest, Shoulders, Triceps)</option>
+                    <option value="pull">Pull (Back, Biceps)</option>
+                    <option value="legs">Legs</option>
+                    <option value="arms">Arms</option>
+                    <option value="fullbody">Full Body</option>
+                </select>
+            </div>
+            <div class="space-y-2">
+                <label for="level" class="block text-sm font-medium text-neutral-700">Experience Level</label>
+                <select name="level" id="level" class="form-select w-full rounded-md border-neutral-300 shadow-sm focus:border-primary-500 focus:ring-primary-500">
+                    <option value="beginner">Beginner</option>
+                    <option value="intermediate">Intermediate</option>
+                    <option value="advanced">Advanced</option>
+                </select>
+            </div>
+            <div class="space-y-2">
+                <label for="goal" class="block text-sm font-medium text-neutral-700">Training Goal</label>
+                <select name="goal" id="goal" class="form-select w-full rounded-md border-neutral-300 shadow-sm focus:border-primary-500 focus:ring-primary-500">
+                    <option value="muscle">Muscle Building</option>
+                    <option value="strength">Strength</option>
+                    <option value="endurance">Endurance</option>
+                </select>
+            </div>
+            <div class="space-y-2">
+                <label for="num_exercises" class="block text-sm font-medium text-neutral-700">Number of Exercises</label>
+                <select name="num_exercises" id="num_exercises" class="form-select w-full rounded-md border-neutral-300 shadow-sm focus:border-primary-500 focus:ring-primary-500">
+                    <option value="4">4 Exercises</option>
+                    <option value="5">5 Exercises</option>
+                    <option value="6">6 Exercises</option>
+                </select>
+            </div>
+            <button type="submit" class="w-full bg-primary-600 hover:bg-primary-700 text-white font-medium py-2 px-4 rounded-lg shadow-md transition-colors">
+                Generate Workout
+            </button>
+        </form>
+
+        <!-- 
+          This block only shows if 'workout_results' were passed from app.py
+        -->
+        {% if workout_results %}
+        <div class="mt-6 space-y-3">
+            <h3 class="text-lg font-medium text-neutral-800">Generated Workout:</h3>
+            {% for exercise in workout_results %}
+            <div class="p-4 rounded-lg bg-neutral-50 border border-neutral-200">
+                <div class="flex items-center justify-between">
+                    <h4 class="text-md font-medium text-primary-700">{{ exercise.name }}</h4>
+                    <span class="text-sm text-neutral-600">{{ exercise.rest }} rest</span>
+                </div>
+                <div class="flex items-center gap-6 mt-2">
+                    <span class="text-neutral-900">Sets: <b class="text-lg">{{ exercise.sets }}</b></span>
+                    <span class="text-neutral-900">Reps: <b class="text-lg">{{ exercise.reps }}</b></span>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+
+</div>
+{% endblock %}

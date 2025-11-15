@@ -1,0 +1,121 @@
+{% extends "admin_layout.html" %}
+
+{% block title %}Edit Member - Admin{% endblock %}
+
+{% block admin_content %}
+<header class="mb-8">
+    <!-- 
+      We use the 'member' variable from app.py to customize the title.
+    -->
+    <h1 class="text-3xl font-bold text-neutral-900">Edit Member: {{ member.name }}</h1>
+    <p class="text-neutral-600">Update the membership details below.</p>
+</header>
+
+<div class="bg-white rounded-xl shadow-lg border border-neutral-200 p-8 max-w-4xl mx-auto">
+    
+    <!-- 
+      This form POSTs to our new 'admin_edit_member' route,
+      and includes the member's ID in the URL.
+    -->
+    <form action="{{ url_for('admin_edit_member', member_id=member.id) }}" method="POST" class="space-y-6">
+
+        <!-- 
+          This is where error/success messages from app.py will appear.
+        -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="p-4 rounded-md {{ 'bg-red-100 text-red-800' if category == 'error' else 'bg-primary-100 text-primary-800' }}" role="alert">
+                        <p class="font-medium">{{ 'Error!' if category == 'error' else 'Success!' }}</p>
+                        <p>{{ message }}</p>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <!-- 
+          This is the pre-filled form.
+          We use the 'value' attribute on each input.
+        -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Full Name -->
+            <div class="space-y-2">
+                <label for="name" class="block text-sm font-medium text-neutral-700">Full Name *</label>
+                <input type="text" name="name" id="name" value="{{ member.name or '' }}" class="form-input w-full rounded-md border-neutral-300 shadow-sm focus:border-primary-500 focus:ring-primary-500" required>
+            </div>
+            <!-- Email -->
+            <div class="space-y-2">
+                <label for="email" class="block text-sm font-medium text-neutral-700">Email *</label>
+                <input type="email" name="email" id="email" value="{{ member.email or '' }}" class="form-input w-full rounded-md border-neutral-300 shadow-sm focus:border-primary-500 focus:ring-primary-500" required>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Phone -->
+            <div class="space-y-2">
+                <label for="phone" class="block text-sm font-medium text-neutral-700">Phone</label>
+                <input type="tel" name="phone" id="phone" value="{{ member.phone or '' }}" class="form-input w-full rounded-md border-neutral-300 shadow-sm focus:border-primary-500 focus:ring-primary-500">
+            </div>
+            <!-- Age -->
+            <div class="space-y-2">
+                <label for="age" class="block text-sm font-medium text-neutral-700">Age</label>
+                <input type="number" name="age" id="age" value="{{ member.age or '' }}" class="form-input w-full rounded-md border-neutral-300 shadow-sm focus:border-primary-500 focus:ring-primary-500">
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <!-- Plan -->
+            <div class="space-y-2">
+                <label for="plan" class="block text-sm font-medium text-neutral-700">Plan *</label>
+                <select name="plan" id="plan" class="form-select w-full rounded-md border-neutral-300 shadow-sm focus:border-primary-500 focus:ring-primary-500" required>
+                    <!-- Jinja logic to select the member's current plan -->
+                    <option value="Basic" {% if member.plan == 'Basic' %}selected{% endif %}>Basic</option>
+                    <option value="Premium" {% if member.plan == 'Premium' %}selected{% endif %}>Premium</option>
+                    <option value="VIP" {% if member.plan == 'VIP' %}selected{% endif %}>VIP</option>
+                </select>
+            </div>
+            <!-- Gender -->
+            <div class="space-y-2">
+                <label for="gender" class="block text-sm font-medium text-neutral-700">Gender</label>
+                <select name="gender" id="gender" class="form-select w-full rounded-md border-neutral-300 shadow-sm focus:border-primary-500 focus:ring-primary-500">
+                    <option value="" {% if not member.gender %}selected{% endif %}>Select gender</option>
+                    <option value="Male" {% if member.gender == 'Male' %}selected{% endif %}>Male</option>
+                    <option value="Female" {% if member.gender == 'Female' %}selected{% endif %}>Female</option>
+                    <option value="Other" {% if member.gender == 'Other' %}selected{% endif %}>Other</option>
+                </select>
+            </div>
+            <!-- Status -->
+            <div class="space-y-2">
+                <label for="status" class="block text-sm font-medium text-neutral-700">Status *</label>
+                <select name="status" id="status" class="form-select w-full rounded-md border-neutral-300 shadow-sm focus:border-primary-500 focus:ring-primary-500" required>
+                    <option value="Active" {% if member.status == 'Active' %}selected{% endif %}>Active</option>
+                    <option value="Inactive" {% if member.status == 'Inactive' %}selected{% endif %}>Inactive</option>
+                    <option value="Expired" {% if member.status == 'Expired' %}selected{% endif %}>Expired</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Address -->
+        <div class="space-y-2">
+            <label for="address" class="block text-sm font-medium text-neutral-700">Address</label>
+            <textarea name="address" id="address" rows="3" class="form-textarea w-full rounded-md border-neutral-300 shadow-sm focus:border-primary-500 focus:ring-primary-500">{{ member.address or '' }}</textarea>
+        </div>
+
+        <!-- Expiry Date -->
+        <div class="space-y-2">
+            <label for="expiry_date" class="block text-sm font-medium text-neutral-700">Expiry Date</label>
+            <input type="date" name="expiry_date" id="expiry_date" value="{{ member.expiry_date or '' }}" class="form-input w-full rounded-md border-neutral-300 shadow-sm focus:border-primary-500 focus:ring-primary-500">
+        </div>
+
+        <!-- Form Actions -->
+        <div class="flex items-center justify-end gap-4 pt-6 border-t border-neutral-200">
+            <a href="{{ url_for('admin_members') }}" class="text-sm font-medium text-neutral-600 hover:text-neutral-900">
+                Cancel
+            </a>
+            <button type="submit" class="bg-primary-600 hover:bg-primary-700 text-white font-medium py-2 px-6 rounded-lg shadow-md transition-colors flex items-center gap-2">
+                Save Changes
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock %}
