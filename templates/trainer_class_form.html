@@ -27,22 +27,26 @@
         <!-- Class Title and Description -->
         <div class="space-y-2">
             <label for="title" class="block text-sm font-medium text-neutral-700">Class Title *</label>
-            <input type="text" name="title" id="title" value="{{ class_data.title or '' }}" class="form-input w-full rounded-md border-neutral-300 shadow-sm focus:border-primary-500 focus:ring-primary-500" required>
+            <!-- FIX: Added text-neutral-900 -->
+            <input type="text" name="title" id="title" value="{{ class_data.title or '' }}" class="form-input w-full rounded-md border-neutral-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 text-neutral-900" required>
         </div>
         <div class="space-y-2">
             <label for="description" class="block text-sm font-medium text-neutral-700">Description</label>
-            <textarea name="description" id="description" rows="3" class="form-textarea w-full rounded-md border-neutral-300 shadow-sm focus:border-primary-500 focus:ring-primary-500">{{ class_data.description or '' }}</textarea>
+            <!-- FIX: Added text-neutral-900 -->
+            <textarea name="description" id="description" rows="3" class="form-textarea w-full rounded-md border-neutral-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 text-neutral-900">{{ class_data.description or '' }}</textarea>
         </div>
 
         <!-- Schedule -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div class="space-y-2">
                 <label for="start_date" class="block text-sm font-medium text-neutral-700">Date *</label>
-                <input type="date" name="start_date" id="start_date" value="{{ class_data.start_date or '' }}" class="form-input w-full rounded-md border-neutral-300 shadow-sm focus:border-primary-500 focus:ring-primary-500" required>
+                <!-- FIX: Added text-neutral-900 -->
+                <input type="date" name="start_date" id="start_date" value="{{ class_data.start_date or '' }}" class="form-input w-full rounded-md border-neutral-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 text-neutral-900" required>
             </div>
             <div class="space-y-2">
                 <label for="start_time" class="block text-sm font-medium text-neutral-700">Time (24h) *</label>
-                <input type="time" name="start_time" id="start_time" value="{{ class_data.start_time or '' }}" class="form-input w-full rounded-md border-neutral-300 shadow-sm focus:border-primary-500 focus:ring-primary-500" required>
+                <!-- FIX: Added text-neutral-900 -->
+                <input type="time" name="start_time" id="start_time" value="{{ class_data.start_time or '' }}" class="form-input w-full rounded-md border-neutral-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 text-neutral-900" required>
             </div>
         </div>
 
@@ -50,12 +54,21 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div class="space-y-2">
                 <label for="capacity" class="block text-sm font-medium text-neutral-700">Capacity *</label>
-                <input type="number" name="capacity" id="capacity" min="1" value="{{ class_data.capacity or 20 }}" class="form-input w-full rounded-md border-neutral-300 shadow-sm focus:border-primary-500 focus:ring-primary-500" required>
+                <!-- FIX: Added text-neutral-900 -->
+                <input type="number" name="capacity" id="capacity" min="1" value="{{ class_data.capacity or 20 }}" class="form-input w-full rounded-md border-neutral-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 text-neutral-900" required>
             </div>
             <div class="space-y-2">
                 <label for="price" class="block text-sm font-medium text-neutral-700">Price (₹)</label>
-                <input type="number" step="any" name="price" id="price" value="{{ class_data.price or 0.00 }}" class="form-input w-full rounded-md border-neutral-300 shadow-sm focus:border-primary-500 focus:ring-primary-500">
+                <!-- FIX: Added text-neutral-900 -->
+                <input type="number" step="any" name="price" id="price" value="{{ class_data.price or 0.00 }}" class="form-input w-full rounded-md border-neutral-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 text-neutral-900">
             </div>
+        </div>
+
+        <!-- Trainer Selection (Note: Trainer ID is passed implicitly in POST route logic) -->
+        <div class="space-y-2">
+            <label class="block text-sm font-medium text-neutral-700">Trainer (You)</label>
+            <!-- Display only, as the route sets the trainer_id automatically -->
+            <input type="text" value="{{ user.name }}" class="form-input w-full rounded-md border-neutral-300 shadow-sm bg-neutral-100 cursor-not-allowed text-neutral-900" readonly disabled>
         </div>
 
         <!-- Form Actions -->

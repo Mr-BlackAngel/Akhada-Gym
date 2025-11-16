@@ -1327,11 +1327,18 @@ def member_workout():
             .order("created_at", desc=True) \
             .limit(10) \
             .execute().data
+        
+        # *** FIX: PARSE THE JSON WORKOUT STRING IN PYTHON ***
+        for log in logs:
+            if isinstance(log.get("workout"), str):
+                log["workout"] = json.loads(log["workout"])
+            # If it's already a dict/list (which newer Supabase versions do), leave it alone.
             
     except Exception as e:
         flash(f"Error fetching workout history: {e}", "error")
         logs = []
 
+    # Render the workout page
     return render_template(
         "member_workout.html",
         user=user,
@@ -1382,7 +1389,15 @@ def member_personal_training():
         sessions_remaining = max(0, limit - sessions_used)
         
         # Fetch trainers for dropdown
-        trainers_list = supabase.from_("trainers").select("id, name").order("name").execute().data
+        trainers_list = (
+    supabase
+    .from_("trainers")
+    .select("id, name")
+    .order("name", desc=False)   # Ascending order
+    .execute()
+    .data
+)
+
 
     except Exception as e:
         # If this initial fetch fails, still allow access to the page with a warning
@@ -1433,6 +1448,7 @@ def member_personal_training():
 def member_classes():
     """
     This is the "Class Booking" page.
+    It fetches and combines Group Class enrollments and Personal Training sessions.
     """
     user = get_user_from_session()
     if not user or user["role"] != "member":
@@ -1445,6 +1461,7 @@ def member_classes():
         try:
             class_id_to_book = int(request.form.get("class_id"))
             
+            # --- Class Booking Logic (Retained for POST request) ---
             existing = supabase.from_("enrollments") \
                 .select("id") \
                 .eq("member_id", member_id) \
@@ -1458,16 +1475,11 @@ def member_classes():
             class_data = supabase.from_("classes").select("capacity").eq("id", class_id_to_book).single().execute().data
             enrollments = supabase.from_("enrollments").select("id", count='exact').eq("class_id", class_id_to_book).execute()
             
-            if class_data and enrollments.count is not None:
-                if enrollments.count >= class_data["capacity"]:
-                    flash("This class is full.", "error")
-                    return redirect(url_for("member_classes"))
+            if class_data and enrollments.count is not None and enrollments.count >= class_data["capacity"]:
+                flash("This class is full.", "error")
+                return redirect(url_for("member_classes"))
             
-            supabase.from_("enrollments").insert({
-                "member_id": member_id,
-                "class_id": class_id_to_book
-            }).execute()
-            
+            supabase.from_("enrollments").insert({"member_id": member_id, "class_id": class_id_to_book}).execute()
             flash("Class booked successfully!", "success")
 
         except Exception as e:
@@ -1475,15 +1487,51 @@ def member_classes():
         
         return redirect(url_for("member_classes"))
 
+    # --- GET Request: Fetching and Merging Data ---
     try:
-        my_enrollments = supabase.from_("enrollments") \
-            .select("*, classes(*, trainers(name))") \
+        # 1. Fetch Group Class Enrollments
+        my_group_enrollments = supabase.from_("enrollments") \
+            .select("id, class_id, classes(title, starts_at, trainers(name))") \
             .eq("member_id", member_id) \
-            .order("enrolled_at", desc=True) \
             .execute().data
         
-        my_enrolled_class_ids = {e["class_id"] for e in my_enrollments}
+        # 2. Fetch Personal Training Sessions
+        my_pt_sessions = supabase.from_("trainer_sessions") \
+            .select("id, session_type, timestamp, trainers(name)") \
+            .eq("member_id", member_id) \
+            .execute().data
 
+        # 3. Build a unified list (combined_bookings)
+        combined_bookings = []
+        my_enrolled_class_ids = set()
+
+        # a) Add Group Classes
+        for enrollment in my_group_enrollments:
+            class_data = enrollment.get('classes', {})
+            combined_bookings.append({
+                "type": "Group",
+                "title": class_data.get('title'),
+                "starts_at": class_data.get('starts_at'),
+                "trainer_name": class_data.get('trainers', {}).get('name', 'N/A'),
+                "enrollment_id": enrollment.get('id') # Used for cancellation link
+            })
+            my_enrolled_class_ids.add(class_data.get('id'))
+
+        # b) Add Personal Training Sessions
+        for session in my_pt_sessions:
+            combined_bookings.append({
+                "type": "PT",
+                "title": session.get('session_type', 'Personal Training'),
+                "starts_at": session.get('timestamp'),
+                "trainer_name": session.get('trainers', {}).get('name', 'N/A'),
+                "enrollment_id": session.get('id') # Using PT session ID (cannot be cancelled from this tab, but used for display)
+            })
+
+        # Sort combined list by date/time
+        # We need to ensure the sorting key handles datetime strings robustly
+        combined_bookings.sort(key=lambda x: x.get('starts_at') if x.get('starts_at') else '', reverse=False)
+
+        # 4. Fetch Available Classes
         now = datetime.now().isoformat()
         all_available_classes = supabase.from_("classes") \
             .select("*, trainers(name)") \
@@ -1492,15 +1540,16 @@ def member_classes():
             .execute().data
 
     except Exception as e:
-        flash(f"Error fetching class list: {e}", "error")
-        my_enrollments = []
+        flash(f"Error fetching class schedule: {e}", "error")
+        combined_bookings = []
+        my_enrolled_class_ids = set()
         all_available_classes = []
 
     return render_template(
         "member_classes.html",
         user=user,
         member_active_page="classes",
-        my_enrollments=my_enrollments,
+        combined_bookings=combined_bookings, # New combined variable
         available_classes=all_available_classes,
         my_enrolled_class_ids=my_enrolled_class_ids
     )

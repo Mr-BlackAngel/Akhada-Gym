@@ -28,11 +28,13 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div class="space-y-2">
                     <label for="name" class="block text-sm font-medium text-neutral-700">Full Name</label>
-                    <input type="text" name="name" id="name" value="{{ member.name or '' }}" class="form-input w-full rounded-md border-neutral-300 shadow-sm focus:border-primary-500 focus:ring-primary-500">
+                    <!-- FIX: Added text-neutral-900 -->
+                    <input type="text" name="name" id="name" value="{{ member.name or '' }}" class="form-input w-full rounded-md border-neutral-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 text-neutral-900">
                 </div>
                 <div class="space-y-2">
                     <label for="email" class="block text-sm font-medium text-neutral-700">Email</label>
-                    <input type="email" name="email" id="email" value="{{ member.email or '' }}" class="form-input w-full rounded-md border-neutral-300 shadow-sm bg-neutral-100 cursor-not-allowed" readonly disabled>
+                    <!-- FIX: Added text-neutral-900 (for consistency, though read-only) -->
+                    <input type="email" name="email" id="email" value="{{ member.email or '' }}" class="form-input w-full rounded-md border-neutral-300 shadow-sm bg-neutral-100 cursor-not-allowed text-neutral-900" readonly disabled>
                     <p class="text-xs text-neutral-500">Email address cannot be changed.</p>
                 </div>
             </div>
@@ -40,15 +42,18 @@
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div class="space-y-2">
                     <label for="phone" class="block text-sm font-medium text-neutral-700">Phone</label>
-                    <input type="tel" name="phone" id="phone" value="{{ member.phone or '' }}" class="form-input w-full rounded-md border-neutral-300 shadow-sm focus:border-primary-500 focus:ring-primary-500">
+                    <!-- FIX: Added text-neutral-900 -->
+                    <input type="tel" name="phone" id="phone" value="{{ member.phone or '' }}" class="form-input w-full rounded-md border-neutral-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 text-neutral-900">
                 </div>
                 <div class="space-y-2">
                     <label for="age" class="block text-sm font-medium text-neutral-700">Age</label>
-                    <input type="number" name="age" id="age" value="{{ member.age or '' }}" class="form-input w-full rounded-md border-neutral-300 shadow-sm focus:border-primary-500 focus:ring-primary-500">
+                    <!-- FIX: Added text-neutral-900 -->
+                    <input type="number" name="age" id="age" value="{{ member.age or '' }}" class="form-input w-full rounded-md border-neutral-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 text-neutral-900">
                 </div>
                 <div class="space-y-2">
                     <label for="gender" class="block text-sm font-medium text-neutral-700">Gender</label>
-                    <select name="gender" id="gender" class="form-select w-full rounded-md border-neutral-300 shadow-sm focus:border-primary-500 focus:ring-primary-500">
+                    <!-- FIX: Added text-neutral-900 -->
+                    <select name="gender" id="gender" class="form-select w-full rounded-md border-neutral-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 text-neutral-900">
                         <option value="" {% if not member.gender %}selected{% endif %}>Select gender</option>
                         <option value="Male" {% if member.gender == 'Male' %}selected{% endif %}>Male</option>
                         <option value="Female" {% if member.gender == 'Female' %}selected{% endif %}>Female</option>
@@ -59,7 +64,8 @@
 
             <div class="space-y-2">
                 <label for="address" class="block text-sm font-medium text-neutral-700">Address</label>
-                <textarea name="address" id="address" rows="3" class="form-textarea w-full rounded-md border-neutral-300 shadow-sm focus:border-primary-500 focus:ring-primary-500">{{ member.address or '' }}</textarea>
+                <!-- FIX: Added text-neutral-900 -->
+                <textarea name="address" id="address" rows="3" class="form-textarea w-full rounded-md border-neutral-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 text-neutral-900">{{ member.address or '' }}</textarea>
             </div>
 
             <div class="flex items-center justify-end gap-4 pt-6 border-t border-neutral-200">
@@ -100,7 +106,7 @@
                 </span>
                 <div>
                     <p class="text-sm text-neutral-500">Membership Expires</p>
-                    <p class="text-lg font-semibold text-neutral-900">{{ member.expiry_date or 'N/A' }}</sppan>
+                    <p class="text-lg font-semibold text-neutral-900">{{ member.expiry_date or 'N/A' }}</p>
                 </div>
             </div>
 
