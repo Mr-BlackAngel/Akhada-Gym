@@ -1,14 +1,24 @@
 {
+  "version": 2,
   "builds": [
     {
-      "src": "Dockerfile",
-      "use": "@vercel/docker"
+      "src": "app.py",
+      "use": "@vercel/python",
+      "config": {
+        "runtime": "python3.10"
+      }
     }
   ],
+  "installCommand": "pip install -r requirements.txt && npm install",
+  "buildCommand": "npm run build:css",
   "routes": [
     {
+      "src": "/static/(.*)",
+      "dest": "/static/$1"
+    },
+    {
       "src": "/(.*)",
-      "dest": "/"
+      "dest": "app.py"
     }
   ]
 }
