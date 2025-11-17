@@ -1,0 +1,80 @@
+# =========================================
+# PYTHON / FLASK
+# =========================================
+
+# Virtual environment
+venv/
+.env/
+.env.local
+*.pyc
+__pycache__/
+instance/
+*.pyo
+*.pyd
+*.pdb
+
+# Flask files
+*.sqlite
+*.db
+*.log
+
+# Byte-compiled / optimized / DLL files
+*.so
+*.egg-info/
+.eggs/
+
+# =========================================
+# NODE / TAILWIND / FRONTEND
+# =========================================
+
+node_modules/        
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Tailwind build artifacts
+static/css/output.css
+static/css/output.min.css
+public/
+dist/
+build/
+.cache/
+
+# =========================================
+# OS JUNK
+# =========================================
+
+.DS_Store
+Thumbs.db
+
+# =========================================
+# IDEs / EDITORS
+# =========================================
+
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# =========================================
+# DOCKER / RUNTIME FILES
+# =========================================
+
+# Railway or Docker build leftovers (none needed)
+docker-compose.override.yml
+
+# =========================================
+# VERCEL
+# =========================================
+
+.vercel/
+.vercel_build_output/
+
+# =========================================
+# MISC
+# =========================================
+
+*.swp
+*.temp
+*.tmp
