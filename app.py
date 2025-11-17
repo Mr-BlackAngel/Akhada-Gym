@@ -1682,18 +1682,19 @@ def generate_booking_id():
     rand = random.randint(100, 999)
     return f"AKHADA{timestamp}{rand}"
 
-# --- API Routes ---
-# This is a 'backend-only' route. Our JavaScript will call this.
+
 @app.route("/api/book_pass", methods=["POST"])
 def api_book_pass():
     """
     Handles the One-Day Pass booking from JavaScript.
     Receives JSON, creates a pass, and returns JSON.
     """
+    import json
+    from flask import jsonify, request
+    from datetime import datetime
+    
     try:
-        # 1. Get data from the JavaScript 'fetch' request
         data = request.json
-        
         name = data.get("name")
         phone = data.get("phone")
         email = data.get("email")
@@ -1702,12 +1703,10 @@ def api_book_pass():
         if not name or not phone or not email or not booking_type:
             return jsonify({"success": False, "error": "Missing required fields."}), 400
 
-        # 2. Generate booking details
-        otp = generate_otp() # We generate a fake one, just like your React app
+        otp = generate_otp()
         booking_id = generate_booking_id()
         amount = 500 if booking_type == 'one_day_pass' else 200
 
-        # 3. Create QR code data
         qr_data = json.dumps({
             "bookingId": booking_id,
             "name": name,
@@ -1716,23 +1715,30 @@ def api_book_pass():
             "amount": amount
         })
 
-        # 4. Insert into Supabase
+        # --- CRITICAL FIX: Checking for Supabase Errors in the response object ---
         response = supabase.from_("one_day_passes").insert({
             "name": name,
             "phone": phone,
             "email": email,
             "booking_type": booking_type,
             "otp": otp,
-            "payment_status": "completed", # Simulating payment, as in your React app
+            "payment_status": "completed", 
             "amount": amount,
             "booking_date": datetime.now().isoformat(),
             "qr_code": qr_data
         }).execute()
-
-        if response.error:
+        
+        # Check if the response itself indicates an error (especially helpful for older libraries)
+        if hasattr(response, 'error') and response.error:
             raise Exception(response.error.message)
         
-        # 5. Send back the new data to our JavaScript
+        if not response.data or not isinstance(response.data, list):
+            # This handles cases where data structure is unexpectedly empty or not a list
+            raise Exception("Supabase returned an invalid or empty response.")
+        
+        # End of CRITICAL FIX ---
+        
+        # Send back the new data to our JavaScript
         return jsonify({
             "success": True,
             "bookingId": booking_id,
@@ -1742,7 +1748,8 @@ def api_book_pass():
         })
 
     except Exception as e:
-        return jsonify({"success": False, "error": str(e)}), 500
+        # Catch and send a clean error response to the client
+        return jsonify({"success": False, "error": f"Booking API Error: {str(e)}"}), 500
 
 @app.route("/admin/classes")
 def admin_classes():
