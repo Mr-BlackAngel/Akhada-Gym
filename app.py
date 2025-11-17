@@ -4,6 +4,7 @@ import os
 from datetime import datetime, timedelta
 import random
 import json
+app = Flask(__name__, static_url_path='/static')
 
 # --- Configuration (Same as before) ---
 SUPABASE_URL = "https://ilymrsgbgdhzqnxypwcm.supabase.co"

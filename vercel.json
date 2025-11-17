@@ -3,14 +3,17 @@
   "builds": [
     {
       "src": "app.py",
-      "use": "@vercel/python",
-      "config": {
-        "runtime": "python3.10"
-      }
+      "use": "@vercel/python"
+    },
+    {
+      "src": "static/**/*",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "templates/**/*",
+      "use": "@vercel/static"
     }
   ],
-  "installCommand": "pip install -r requirements.txt && npm install",
-  "buildCommand": "npm run build:css",
   "routes": [
     {
       "src": "/static/(.*)",

@@ -5,6 +5,7 @@ module.exports = {
   content: [
     // This tells Tailwind to scan all your HTML files for CSS classes
     "./templates/**/*.html",
+    "./static/js/**/*.js"
   ],
   theme: {
     extend: {
