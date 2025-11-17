@@ -1,9 +1,10 @@
-{
+ {
   "name": "akhada-flask",
   "version": "1.0.0",
   "description": "Python server for Akhada Gym",
   "scripts": {
-    "build:css": "tailwindcss -i ./static/css/input.css -o ./static/css/style.css --watch"
+    "build:css": "tailwindcss -i ./static/css/input.css -o ./static/css/style.css --minify",
+    "vercel-build": "npm run build:css"
   },
   "devDependencies": {
     "@tailwindcss/forms": "^0.5.7",
